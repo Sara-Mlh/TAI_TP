@@ -8,8 +8,24 @@ import cv2 as cv
 
 
 #Functions---------------------------------------
-def inversion(image):
+def histogram1(image):
    image = np.array(image.convert('L'))
+   h,w= image.shape
+   #creation du premier histogramme
+   H1 = np.zeros((256,1),np.uint32)
+   for i in range(h):
+    for j in range(w):    
+            H1[image[i,j]]+=1              
+   fig = plt.figure()
+   plt.xlabel("Pixel values")
+   plt.ylabel("Frequency (number of pixels)")
+   plt.title("Histogram")
+   plt.plot(H1,color='blue')
+   #display inverted image
+   st.pyplot(fig)
+   
+def inversion(image1):
+   image = np.array(image1.convert('L'))
    h,w= image.shape
    img = np.zeros(image.shape,np.uint8)
    #creation du premier histogramme
@@ -21,21 +37,17 @@ def inversion(image):
             H1[image[i,j]]+=1
             H2[img[i,j]]+=1     
    #Histogram before inversion
-   fig = plt.figure()
-   plt.xlabel("Pixel values")
-   plt.ylabel("Frequency (number of pixels)")
-   plt.title("Histogram before inversion")
-   plt.plot(H1,color='blue')
+   histogram1(image1)
    #display inverted image
-   st.pyplot(fig)
    st.write("Inverted image : ")
    st.image(img)
    #Histogram after inversion       
    fig1 = plt.figure()
    plt.xlabel("Pixel values")
    plt.ylabel("Frequency (number of pixels)")
-   plt.title("Histogram of inverted img")
+   plt.title("Histogram inverted")
    plt.plot(H2,color='red')
+   st.write("Histogram after inversion :")
    st.pyplot(fig1)
 
 def gris(image):
@@ -51,26 +63,33 @@ def gris(image):
   st.image(img2)
 
 #def egalisation(image):
-def expansion(image):
-   image = np.array(image.convert('L'))
+def expansion(image1):
+   image = np.array(image1.convert('L'))
    h,w= image.shape
    valeurs = image.ravel()
    min_val = min(valeurs)
    max_val = max(valeurs)  
    img_res = np.zeros(image.shape,np.uint8)
+   H2 = np.zeros((256,1),np.uint32)
    for i in range(h):
        for j in range(w): 
-           img_res[i,j]=(255*(image[i,j]-min_val))/(max_val-min_val)   
+           img_res[i,j]=(255*(image[i,j]-min_val))/(max_val-min_val) 
+           H2[img_res[i,j]]+=1  
+   st.write('histogram before expansion :')
+   histogram1(image1)
    st.write("Image after expansion :")
    st.image(img_res)
+   #plot hist after expansion
+   fig1 = plt.figure()
+   plt.xlabel("Pixel values")
+   plt.ylabel("Frequency (number of pixels)")
+   plt.title("Histogram")
+   plt.plot(H2,color='orange')
+   st.write("Histogram after expansion :")
+   st.pyplot(fig1)
 
-def translation (image,ecart):
-  image = np.array(image.convert('L'))
-  h,w= image.shape
-  His = np.zeros((256,),np.uint32)
-  for i in range(h):
-    for j in range(w): 
-        His[image[i,j]]+=1
+def translation (image1,ecart):
+  image = np.array(image1.convert('L'))
   image_translated = image+ecart
   st.write("Image after translation :")
   st.image(image_translated)
@@ -80,16 +99,15 @@ def translation (image,ecart):
   plt.bar(range(256), histogram_translated, color="green")
   plt.xlabel('Pixel Value')
   plt.ylabel('Frequency')
-  plt.title('Histogram after Translation')
-  plt.xlim(np.min(image_translated), np.max(image_translated))
-  #or plt.xlim(0, 255)
+  plt.title('Histogram ')
+  plt.xlim(0, 255)
   plt.grid(True)
   # Display the histogram plot using Streamlit
   st.write("Histogram after translation:")
   st.pyplot(fig)
 
-def egalisation(image):
-   image = np.array(image.convert('L'))
+def egalisation(image1):
+   image = np.array(image1.convert('L'))
    h,w= image.shape
    #histgramme 1
    H1 = np.zeros((256,1),np.uint32)
@@ -105,6 +123,8 @@ def egalisation(image):
    for i in range(h):
        for j in range(w): 
            img_res[i,j]=H_eg[image[i,j]]
+   st.write("Histogram before egalisation :")
+   histogram1(image1)
    st.write("Image after egalisation :")
    st.image(img_res)
    #Deuxième histogramme
@@ -119,6 +139,7 @@ def egalisation(image):
    plt.title("Histogram")
    plt.plot(H2,color='red')
    #Histogram after egalisation
+   st.write("Histogram after egalisation")
    st.pyplot(fig)
    
 #sideBar---------------------------------------------------------
