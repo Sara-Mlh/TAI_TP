@@ -12,12 +12,31 @@ def inversion(image):
    image = np.array(image.convert('L'))
    h,w= image.shape
    img = np.zeros(image.shape,np.uint8)
+   #creation du premier histogramme
+   H1 = np.zeros((256,1),np.uint32)
+   H2 = np.zeros((256,1),np.uint32)
    for i in range(h):
     for j in range(w):    
             img[i,j] = 255-image[i, j]
-
+            H1[image[i,j]]+=1
+            H2[img[i,j]]+=1     
+   #Histogram before inversion
+   fig = plt.figure()
+   plt.xlabel("Pixel values")
+   plt.ylabel("Frequency (number of pixels)")
+   plt.title("Histogram before inversion")
+   plt.plot(H1,color='blue')
+   #display inverted image
+   st.pyplot(fig)
    st.write("Inverted image : ")
    st.image(img)
+   #Histogram after inversion       
+   fig1 = plt.figure()
+   plt.xlabel("Pixel values")
+   plt.ylabel("Frequency (number of pixels)")
+   plt.title("Histogram of inverted img")
+   plt.plot(H2,color='red')
+   st.pyplot(fig1)
 
 def gris(image):
   image=np.array(image)
@@ -37,8 +56,7 @@ def expansion(image):
    h,w= image.shape
    valeurs = image.ravel()
    min_val = min(valeurs)
-   max_val = max(valeurs)
-   
+   max_val = max(valeurs)  
    img_res = np.zeros(image.shape,np.uint8)
    for i in range(h):
        for j in range(w): 
@@ -66,7 +84,6 @@ def translation (image,ecart):
   plt.xlim(np.min(image_translated), np.max(image_translated))
   #or plt.xlim(0, 255)
   plt.grid(True)
-  
   # Display the histogram plot using Streamlit
   st.write("Histogram after translation:")
   st.pyplot(fig)
