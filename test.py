@@ -53,19 +53,22 @@ def translation (image,ecart):
   for i in range(h):
     for j in range(w): 
         His[image[i,j]]+=1
-  img_res = image+ecart
+  image_translated = image+ecart
   st.write("Image after translation :")
-  st.image(img_res)
+  st.image(image_translated)
+  histogram_translated, _ = np.histogram(image_translated.flatten(), bins=256, range=[0, 256])
    # Plot the histogram
   fig = plt.figure(figsize=(8, 4))
-  plt.bar(range(256), His,color="green")
+  plt.bar(range(256), histogram_translated, color="green")
   plt.xlabel('Pixel Value')
-  plt.ylabel('Frequency (number of pixels)')
-  plt.title('Histogram')
-  plt.xlim(0, 255)
-  plt.grid(True)  
+  plt.ylabel('Frequency')
+  plt.title('Histogram after Translation')
+  plt.xlim(np.min(image_translated), np.max(image_translated))
+  #or plt.xlim(0, 255)
+  plt.grid(True)
+  
   # Display the histogram plot using Streamlit
-  st.write("Histogram:")
+  st.write("Histogram after translation:")
   st.pyplot(fig)
 
 def egalisation(image):
