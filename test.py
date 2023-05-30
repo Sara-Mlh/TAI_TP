@@ -242,23 +242,6 @@ def classification_quantization(image, num_colors):
     
     return quantized_image
 
-def median_cut_quantization1(image, num_colors):
-    image = np.array(image)
-    pixels = image.reshape(-1, 3)
-    
-    # Création de la palette de couleurs
-    palette = np.zeros((num_colors, 3), dtype=np.uint8)
-    
-    # Sélection des couleurs initiales pour la palette
-    initial_colors = select_initial_colors(pixels, num_colors)
-    
-    # Appliquer l'algorithme Median Cut
-    split_palette(pixels, palette, initial_colors, 0)
-    
-    # Conversion des pixels de l'image vers les couleurs de la palette
-    quantized_image = apply_palette(image, palette)
-    
-    return quantized_image
 
 #sideBar---------------------------------------------------------
 st.title("Image processing")
@@ -271,7 +254,7 @@ with st.sidebar:
     ("","Inversion","Expansion dynamique","Translation","Egalisation", "Quantification","Segmentation")
     )
     if selectbox=="Quantification":
-       select_quantification = st.selectbox("Select a quantification method :",("","Uniforme","Median cut","Classification"))
+       select_quantification = st.selectbox("Select a quantification method :",("","Uniforme","Classification"))
     if selectbox=="Segmentation":
        selectbox_seg = st.selectbox("Select a segmentation method :",("","Detection Contours","Segmentation region"))
 
@@ -315,20 +298,6 @@ if uploaded_image is not None:
         quantized_image = classification_quantization(image, num_colors)
         st.write("Image after Classification Quantization:")
         st.image(quantized_image)
-    elif select_quantification =="Median cut":
-        num_colors = st.slider("Number of Colors", 2, 256, 16)
-
-        # Conversion de l'image en tableau numpy
-        image_array = np.array(image)
-
-        # Application de la quantification Median Cut
-        quantized_image = median_cut_quantization1(image_array, num_colors)
-
-        # Conversion de l'image quantifiée en Image PIL
-        quantized_image_pil = Image.fromarray(quantized_image)
-
-        # Affichage de l'image quantifiée
-        st.write("Image after Median Cut Quantization:")
-        st.image(quantized_image_pil)
+   
     
 
