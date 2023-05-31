@@ -63,7 +63,6 @@ def gris(image):
   st.write("GrayScaled image :")
   st.image(img2)
 
-#def egalisation(image):
 def expansion(image1):
    image = np.array(image1.convert('L'))
    h,w= image.shape
